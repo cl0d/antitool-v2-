@@ -1,0 +1,30 @@
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+
+local Player = Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+local AntiTool = function(Character)
+    Character.ChildAdded:Connect(function(x)
+        if x:IsA("Tool") then
+            coroutine.wrap(function()
+                local Handle = x:FindFirstChild("Handle")
+                local Touch
+                if Handle then
+                    Handle.Name = "Part"
+                    Handle.CanTouch = false
+                end
+            end)()
+            x.AncestryChanged:Connect(function(Tool, Parent)
+                if Parent == Player.Character then
+                    Tool:Destroy()
+                    coroutine.wrap(function()
+                        wait()
+                        Tool.Parent = nil
+                    end)()
+                end
+            end)
+        end
+    end)
+end
